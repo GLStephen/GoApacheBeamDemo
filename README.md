@@ -16,7 +16,7 @@ Can be done batch (think similar to hadoop) or stream.
 
 The idea is that this is fundamental data processing. What you do with this is up to you.
 
-Conceptually = Language + Parallel Processing Framework + Orchestration Environment for Runners
+Conceptually = Language + Parallel Processing Framework + Orchestration Environment for Runners  
 Specifics = Go + Beam + GCP Dataflow
 
 ### basic setup
@@ -44,3 +44,18 @@ write tool to enter items into pubsub
 * pubsub A with 10 items in it
 * pubsub B with 1,000,000 items in it
 * pubsub C with 1,000,000 items in it
+
+psgen <channel_name> <count>    
+psgen pubsub_demo_channelA 10  
+psgen pubsub_demo_channelB 1000000  
+psgen pubsub_demo_channelC 1000000  
+
+## data generated
+
+random word strings like
+
+aardvark must make money with wooty woot
+
+## metrics created by app
+
+count words, and count by first letter of each word
