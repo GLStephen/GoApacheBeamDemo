@@ -12,6 +12,8 @@
 
 The value of the demo is to show the value of DataFlow and Apache Beam with Go not just for linear "fast" processing, but for parallel processing.
 
+Can be done batch (think similar to hadoop) or stream.
+
 * put strings into pubsub
 * read strings into the system
 * if X word occurs count and write out to a file|DB|??
