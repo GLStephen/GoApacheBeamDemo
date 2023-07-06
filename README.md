@@ -36,3 +36,11 @@ Specifics = Go + Beam + GCP Dataflow
 * batch sumaries
 * windowed
 * complex calculations
+
+# for demo
+
+write tool to enter items into pubsub
+
+* pubsub A with 10 items in it
+* pubsub B with 1,000,000 items in it
+* pubsub C with 1,000,000 items in it
