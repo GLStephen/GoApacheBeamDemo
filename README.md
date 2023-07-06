@@ -14,6 +14,10 @@ The value of the demo is to show the value of DataFlow and Apache Beam with Go n
 
 Can be done batch (think similar to hadoop) or stream.
 
+The idea is that this is fundamental datat processing. What you do with this is up to you.
+
+### basic setup
+
 * put strings into pubsub
 * read strings into the system
 * if X word occurs count and write out to a file|DB|??
@@ -23,3 +27,9 @@ Can be done batch (think similar to hadoop) or stream.
 * input 1 million words
   * run larger version with capped dataflow workers in batch mode (slowish)
   * run larger version with more workers in batch mode (faster than previous)
+ 
+## things to talk about
+
+* batch sumaries
+* windowed
+* complex calculations
