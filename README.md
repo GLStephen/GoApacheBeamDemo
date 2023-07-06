@@ -6,4 +6,4 @@
 
 ## based on example
 
-https://github.com/apache/beam/blob/master/sdks/go/examples/streaming_wordcap/wordcap.go
+* https://github.com/apache/beam/blob/master/sdks/go/examples/streaming_wordcap/wordcap.go
