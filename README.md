@@ -14,7 +14,11 @@ The value of the demo is to show the value of DataFlow and Apache Beam with Go n
 
 Can be done batch (think similar to hadoop) or stream.
 
-The idea is that this is fundamental datat processing. What you do with this is up to you.
+The idea is that this is fundamental data processing. What you do with this is up to you.
+
+Go + Beam + GCP Dataflow
+
+Language + Parallel Processing Framework + Orchestration Environment for Runners
 
 ### basic setup
 
