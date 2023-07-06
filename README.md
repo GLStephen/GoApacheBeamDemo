@@ -16,9 +16,8 @@ Can be done batch (think similar to hadoop) or stream.
 
 The idea is that this is fundamental data processing. What you do with this is up to you.
 
-Go + Beam + GCP Dataflow
-
-Language + Parallel Processing Framework + Orchestration Environment for Runners
+Conceptually = Language + Parallel Processing Framework + Orchestration Environment for Runners
+Specifics = Go + Beam + GCP Dataflow
 
 ### basic setup
 
