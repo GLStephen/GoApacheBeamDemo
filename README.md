@@ -19,6 +19,10 @@ The idea is that this is fundamental data processing. What you do with this is u
 Conceptually = Language + Parallel Processing Framework + Orchestration Environment for Runners  
 Specifics = Go + Beam + GCP Dataflow
 
+Called Kappa Architecture vs Lambda - Kappa unifies streaming and batch
+
+heavily focuses stored streaming
+
 ### basic setup
 
 * put strings into pubsub
