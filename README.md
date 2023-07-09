@@ -59,3 +59,11 @@ aardvark must make money with wooty woot
 ## metrics created by app
 
 count words, and count by first letter of each word
+
+## concepts to cover in presetnation
+
+* the need to process a set of items where the processing is unrelated is a scaling or unit of work problem
+* when you need to process lots of items in parallel and the results are related to each other you need a framework like beam
+* example: processing independent queued messages vs. processing, counting or analyzing a set of related messages in a queue
+
+  
