@@ -1,5 +1,17 @@
 # GoApacheBeamDemo
 
+## after container start
+
+run the following to initialize your gcloud
+
+```bash
+gcloud init
+```
+
+then configure the projects for gcloud that you want to use
+
+then run on the dataflow runner, as outlined here: https://cloud.google.com/dataflow/docs/quickstarts/create-pipeline-go
+
 ## resources
 
 * https://beam.apache.org/documentation/sdks/go/
@@ -16,7 +28,7 @@ Can be done batch (think similar to hadoop) or stream.
 
 The idea is that this is fundamental data processing. What you do with this is up to you.
 
-Conceptually = Language + Parallel Processing Framework + Orchestration Environment for Runners  
+Conceptually = Language + Parallel Processing Framework + Orchestration Environment for Runners
 Specifics = Go + Beam + GCP Dataflow
 
 Called Kappa Architecture vs Lambda - Kappa unifies streaming and batch
@@ -34,7 +46,7 @@ heavily focuses stored streaming
 * input 1 million words
   * run larger version with capped dataflow workers in batch mode (slowish)
   * run larger version with more workers in batch mode (faster than previous)
- 
+
 ## things to talk about
 
 * batch sumaries
@@ -49,10 +61,10 @@ write tool to enter items into pubsub
 * pubsub B with 1,000,000 items in it
 * pubsub C with 1,000,000 items in it
 
-psgen <channel_name> <count>    
-psgen pubsub_demo_channelA 10  
-psgen pubsub_demo_channelB 1000000  
-psgen pubsub_demo_channelC 1000000  
+psgen <channel_name> <count>
+psgen pubsub_demo_channelA 10
+psgen pubsub_demo_channelB 1000000
+psgen pubsub_demo_channelC 1000000
 
 ## data generated
 
@@ -70,4 +82,4 @@ count words, and count by first letter of each word
 * when you need to process lots of items in parallel and the results are related to each other you need a framework like beam
 * example: processing independent queued messages vs. processing, counting or analyzing a set of related messages in a queue
 
-  
+
