@@ -12,6 +12,25 @@ then configure the projects for gcloud that you want to use
 
 then run on the dataflow runner, as outlined here: https://cloud.google.com/dataflow/docs/quickstarts/create-pipeline-go
 
+example
+```bash
+go run wordcount.go --input gs://dataflow-samples/shakespeare/kinglear.txt \
+            --output gs://BUCKET_NAME/results/outputs \
+            --runner dataflow \
+            --project PROJECT_ID \
+            --region DATAFLOW_REGION \
+            --staging_location gs://BUCKET_NAME/binaries/
+```
+
+specific
+
+```bash
+go run main.go --runner dataflow \
+            --project mulan-372517 \
+            --region us-east1 \
+            --staging_location gs://bucket-wordcount-example/binaries/
+```
+
 ## resources
 
 * https://beam.apache.org/documentation/sdks/go/
