@@ -10,6 +10,10 @@ gcloud init
 
 then configure the projects for gcloud that you want to use
 
+ensure dataflow API is enabled
+
+ensure compute engine API is enabled
+
 then run on the dataflow runner, as outlined here: https://cloud.google.com/dataflow/docs/quickstarts/create-pipeline-go
 
 example
