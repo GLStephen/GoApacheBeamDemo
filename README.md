@@ -62,7 +62,7 @@ heavily focuses stored streaming
 
 * put strings into pubsub
 * read strings into the system
-* if X word occurs count and write out to a file|DB|??
+* lowercase them
 
 ### run process in 3 types of batches
 * run simple one word entry then run batch
