@@ -1,0 +1,1 @@
+go build -C ./src/generator/ -o ../../

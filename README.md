@@ -31,6 +31,12 @@ go run main.go --runner dataflow \
             --staging_location gs://bucket-wordcount-example/binaries/
 ```
 
+monorepo transition
+
+```bash
+go run -C ./src/processor/ main.go --runner dataflow --project mulan-372517 --region us-east1 --staging_location gs://bucket-wordcount-example/binaries/ --async
+```
+
 ## resources
 
 * https://beam.apache.org/documentation/sdks/go/
