@@ -26,8 +26,9 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
+	"math/rand"
 	"os"
+	"unicode/utf8"
 
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/log"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/options/gcpopts"
@@ -35,53 +36,57 @@ import (
 )
 
 var (
-	input = flag.String("input", os.ExpandEnv("$USER-wordcap"), "Pubsub input topic.")
+	input   = flag.String("input", os.ExpandEnv("$USER-wordcap"), "Pubsub input topic.")
+	command = flag.String("command", "generate", "Default command")
+	count   = flag.Int("totalStrings", 10, "Default number of total strings")
 )
 
-var (
-	data = []string{
-		"foo",
-		"bar",
-		"bazy",
-		"bazsdf",
-		"bazss",
-		"bazsd",
-		"bazsd",
-		"bazsaaaa",
-	}
-)
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
 
 func main() {
+	flag.Parse()
+
 	ctx := context.Background()
 
-	argsWithProg := os.Args
-	argsWithoutProg := os.Args[1:]
+	log.Infof(ctx, "%v %v %v %v", *input, *command, *count, utf8.RuneCountInString(*command))
 
-	if len(os.Args) > 1 {
-		arg := os.Args[3]
-
-		fmt.Println(argsWithProg)
-		fmt.Println(argsWithoutProg)
-		fmt.Println(arg)
+	if utf8.RuneCountInString(*command) > 0 {
+		switch *command {
+		case "generate":
+			log.Infof(ctx, "Running Generate Command for %d strings", count)
+			sendPubSubData(ctx, *count)
+		}
 	} else {
 		displayArgError(ctx)
 	}
 }
 
 func displayArgError(ctx context.Context) {
-	log.Info(ctx, "Publishing %v messages to: %v", len(data), *input)
+	log.Info(ctx, "Error with Input Data")
 }
 
-func sendPubSubData(ctx context.Context) {
-	flag.Parse()
+func sendPubSubData(ctx context.Context, totalStrings int) {
+	var data []string
+
+	for i := 0; i < totalStrings; i++ {
+		data = append(data, randStringRunes(rand.Intn(8)+1))
+	}
+
+	log.Infof(ctx, "Publishing %v messages to: %v %v", len(data), *input, data)
 
 	project := gcpopts.GetProject(ctx)
-
-	log.Infof(ctx, "Publishing %v messages to: %v", len(data), *input)
 
 	defer pubsubx.CleanupTopic(ctx, project, *input)
 	_, err := pubsubx.Publish(ctx, project, *input, data...)
 	if err != nil {
 		log.Fatal(ctx, err)
 	}
+}
+
+func randStringRunes(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
 }

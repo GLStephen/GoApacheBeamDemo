@@ -43,19 +43,6 @@ var (
 	input = flag.String("input", os.ExpandEnv("$USER-wordcap"), "Pubsub input topic.")
 )
 
-var (
-	data = []string{
-		"foo",
-		"bar",
-		"bazy",
-		"bazsdf",
-		"bazss",
-		"bazsd",
-		"bazsd",
-		"bazsaaaa",
-	}
-)
-
 func main() {
 	flag.Parse()
 	beam.Init()
