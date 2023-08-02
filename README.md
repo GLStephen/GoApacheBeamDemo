@@ -41,7 +41,7 @@ monorepo transition
 go run -C ./src/processor/ main.go --runner dataflow --project mulan-372517 --region us-east1 --staging_location gs://bucket-wordcount-example/binaries/ --async
 ```
 
-## other ideas and noes
+## other ideas and notes
 
 https://beam.apache.org/get-started/wordcount-example/
 
