@@ -42,7 +42,8 @@ var (
 	count   = flag.Int("count", 10, "Default number of total strings")
 )
 
-var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
+// var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
+var letterRunes = []rune("abc")
 
 func main() {
 	flag.Parse()
@@ -100,14 +101,19 @@ func sendPubSubData(ctx context.Context, totalStrings int) {
 	log.Infof(ctx, "Subscription %s created for %s", sub.ID(), topic.ID())
 
 	defer topic.Stop()
-	var results []*pubsub.PublishResult
+	//var results []*pubsub.PublishResult
+	startTime := time.Now().Unix()
 	for i := 0; i < totalStrings; i++ {
 		// data = append(data, randStringRunes(rand.Intn(8)+1))
-		message := randStringRunes(rand.Intn(8) + 1)
-		res := topic.Publish(ctx, &pubsub.Message{Data: []byte(message)})
-		results = append(results, res)
-		log.Infof(ctx, "Publishing %s\n", message)
+		message := randStringRunes(3)
+		topic.Publish(ctx, &pubsub.Message{Data: []byte(message)})
+		// results = append(results, res)
+		// log.Infof(ctx, "Publishing %s %d\n", message, i)
 	}
+	topic.Flush()
+	endTime := time.Now().Unix()
+
+	log.Infof(ctx, "Published %d messages in %d seconds Start %d End %d\n", totalStrings, (endTime - startTime), startTime, endTime)
 
 	//log.Infof(ctx, "Published %v messages to: %v %v", len(results), *input, results)
 }

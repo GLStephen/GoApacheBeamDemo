@@ -26,6 +26,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 
@@ -34,6 +35,7 @@ import (
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/io/pubsubio"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/log"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/options/gcpopts"
+	"github.com/apache/beam/sdks/v2/go/pkg/beam/transforms/stats"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/util/pubsubx"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/x/beamx"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/x/debug"
@@ -67,13 +69,26 @@ func main() {
 	p := beam.NewPipeline()
 	s := p.Root()
 
+	// get data
 	col := pubsubio.Read(s, project, *input, &pubsubio.ReadOptions{Subscription: sub.ID()})
+
+	// capitalize
 	str := beam.ParDo(s, func(b []byte) string {
 		return (string)(b)
 	}, col)
 	cap := beam.ParDo(s, strings.ToUpper, str)
-	debug.Print(s, cap)
-	log.Infof(ctx, "Coverted %s to %s.", s, cap)
+	debug.Print(s, stats.CountElms(s, cap))
+
+	// count
+	counted := stats.Count(s, cap)
+	formatted := beam.ParDo(s, func(w string, c int) string {
+		return fmt.Sprintf("Counts %s: %v", w, c)
+	}, counted)
+
+	// output the data
+	debug.Print(s, formatted)
+
+	//log.Infof(ctx, "Coverted %s to %s.", s, cap)
 
 	if err := beamx.Run(context.Background(), p); err != nil {
 		log.Exitf(ctx, "Failed to execute job: %v", err)
