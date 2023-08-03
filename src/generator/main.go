@@ -28,17 +28,18 @@ import (
 	"flag"
 	"math/rand"
 	"os"
+	"time"
 	"unicode/utf8"
 
+	"cloud.google.com/go/pubsub"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/log"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/options/gcpopts"
-	"github.com/apache/beam/sdks/v2/go/pkg/beam/util/pubsubx"
 )
 
 var (
 	input   = flag.String("input", os.ExpandEnv("$USER-wordcap"), "Pubsub input topic.")
 	command = flag.String("command", "generate", "Default command")
-	count   = flag.Int("totalStrings", 10, "Default number of total strings")
+	count   = flag.Int("count", 10, "Default number of total strings")
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
@@ -53,7 +54,7 @@ func main() {
 	if utf8.RuneCountInString(*command) > 0 {
 		switch *command {
 		case "generate":
-			log.Infof(ctx, "Running Generate Command for %d strings", count)
+			log.Infof(ctx, "Running Generate Command for %d strings", *count)
 			sendPubSubData(ctx, *count)
 		}
 	} else {
@@ -66,22 +67,69 @@ func displayArgError(ctx context.Context) {
 }
 
 func sendPubSubData(ctx context.Context, totalStrings int) {
-	var data []string
-
-	for i := 0; i < totalStrings; i++ {
-		data = append(data, randStringRunes(rand.Intn(8)+1))
-	}
-
-	log.Infof(ctx, "Publishing %v messages to: %v %v", len(data), *input, data)
-
 	project := gcpopts.GetProject(ctx)
 
-	defer pubsubx.CleanupTopic(ctx, project, *input)
-	_, err := pubsubx.Publish(ctx, project, *input, data...)
+	client, err := pubsub.NewClient(ctx, project)
 	if err != nil {
 		log.Fatal(ctx, err)
 	}
+	defer client.Close()
+
+	topic, err := client.CreateTopic(ctx, *input)
+	if err != nil {
+		log.Info(ctx, "Topic Reused")
+		topic = client.Topic(*input)
+	} else {
+		// topic created
+		log.Info(ctx, "New Topic Created")
+	}
+
+	sub, err := client.CreateSubscription(ctx, topic.ID(), pubsub.SubscriptionConfig{
+		Topic:       topic,
+		AckDeadline: 600 * time.Second,
+	})
+	if err != nil {
+		// this is informational for our purposes
+		log.Infof(ctx, "Subcription Exists %v", err)
+		sub = client.Subscription(topic.ID())
+	} else {
+		// topic created
+		log.Info(ctx, "New Subscription Created")
+	}
+
+	log.Infof(ctx, "Subscription %s created for %s", sub.ID(), topic.ID())
+
+	defer topic.Stop()
+	var results []*pubsub.PublishResult
+	for i := 0; i < totalStrings; i++ {
+		// data = append(data, randStringRunes(rand.Intn(8)+1))
+		message := randStringRunes(rand.Intn(8) + 1)
+		res := topic.Publish(ctx, &pubsub.Message{Data: []byte(message)})
+		results = append(results, res)
+		log.Infof(ctx, "Publishing %s\n", message)
+	}
+
+	//log.Infof(ctx, "Published %v messages to: %v %v", len(results), *input, results)
 }
+
+// func sendPubSubDataOld(ctx context.Context, totalStrings int) {
+// 	var data []string
+
+// 	for i := 0; i < totalStrings; i++ {
+// 		data = append(data, randStringRunes(rand.Intn(8)+1))
+// 	}
+
+// 	log.Infof(ctx, "Publishing %v messages to: %v %v", len(data), *input, data)
+
+// 	project := gcpopts.GetProject(ctx)
+
+// 	//defer pubsubx.CleanupTopic(ctx, project, *input)
+// 	sub, err := pubsubx.Publish(ctx, project, *input, data...)
+// 	if err != nil {
+// 		log.Fatal(ctx, err)
+// 	}
+// 	log.Infof(ctx, "Subscription ID %v", sub.ID())
+// }
 
 func randStringRunes(n int) string {
 	b := make([]rune, n)
